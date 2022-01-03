@@ -28,7 +28,7 @@ def banco_fill():
         vcon = data.ConnectDB()
         linhas=data.fill(vcon,vquery)
         for i in linhas:
-            app.insert("","end",values=i) 
+            app.insert("","end",values=i)
 
 ## Deleta itens da tabela tb_products
 def delete():
@@ -68,6 +68,7 @@ def adding():
         entrada_media.delete(0, END)
         entrada_produto.delete(0, END)
         entrada_codigo.focus()
+        banco_fill()
    
 
     ## Janela para adição de produtos
