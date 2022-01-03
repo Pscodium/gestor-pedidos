@@ -54,7 +54,7 @@ def adding():
         query="INSERT INTO tb_products (CODE, PRODUCT, MEAN) VALUES('"+code+"','"+product+"','"+mean+"')"
         data.insert(vcon,query)
     
-
+    ## Insere os Produtos na tabela da Treeview
     def insert():
         code = entrada_codigo.get()
         product = entrada_produto.get()
