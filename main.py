@@ -19,9 +19,11 @@ window.configure(bg=color2)
 window.geometry("800x700")
 window.resizable(False, False)
 
+
+## Lista de mercados da combobox
 mercados = ['Condor', 'Bistek', 'Hipermais Joao Costa', 'Hipermais Araquari', 'Fort Atacadista', 'Rodrigues']
 
-## Atualiza conexão com o banco de dados.(roda basicamente à todo comando, pois é responsável por atualizar os produtos que estão na tabela com os que foram adicionados no banco de dados)
+## Atualiza conexão com o banco de dados do mercado selecionado mostrando assim todos os elementos dentro dele
 def mercado_selected():
     app.delete(*app.get_children())
     mercado = cmercados.get()
@@ -32,7 +34,7 @@ def mercado_selected():
         app.insert("","end",values=i)  
  
 
-## Deleta itens da tabela tb_products
+## Deleta item selecionado no mercado selecionado
 def delete():
     try:
         mercado = cmercados.get()
@@ -47,7 +49,7 @@ def delete():
         return
     mercado_selected()
 
-## Adiciona o item ao banco de dados
+## Adiciona o item ao banco de dados do mercado selecionado
 def adding():
     def insert_banco():
         mercado = cmercados.get()
@@ -127,10 +129,14 @@ badding.place(x=100,y=600)
 bdelete = Button(window, text='Delete', width=10, height=0,bg=color4,fg=color1,border=0,command=delete)
 bdelete.place(x=596,y=551)
 
+
+## Combobox com os mercados
 cmercados = ttk.Combobox(window, values=mercados, width=15, justify='center')
 cmercados.set("Condor")
 cmercados.place(x=100, y = 30)
 
+
+## Botão que seleciona mercado da combobox
 bmercados = Button(window, text='Selecionar', width=10, height=0, bg=selected, fg=color1, border=0, command=mercado_selected)
 bmercados.place(x=260, y= 27)
 

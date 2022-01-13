@@ -15,9 +15,11 @@ color4 = '#AB4DEB'
 color5 = '#EB8F59'
 selected ='#66d1d0' 
 
+## lista da combobox de mercados
 mercados = ['Condor', 'Bistek', 'Hipermais Joao Costa', 'Hipermais Araquari', 'Fort Atacadista', 'Rodrigues']
 
-def listing():
+## Lista em uma combobox os códigos dos produtos inseridos no banco do mercado selecionado através da main.py
+def listing(): ## Essa função fica responsável por atualizar a conexão com o banco de dados para retornar as informações dele
     mercado = cmercados.get()
     combo.set('')
     query = "SELECT CODE FROM '"+mercado+"' order by CODE"
@@ -27,7 +29,7 @@ def listing():
     combo['values'] = (listas)
     return listas 
     
-
+## Uitilizando a combobox de mercados para conectar a tree com o banco de dados de planilha de cada mercado
 def mercado_selected():
     app.delete(*app.get_children())
     mercado = cmercados.get()
@@ -54,7 +56,7 @@ def mercado_selected():
 
 
 
-## Cria uma planilha para cada pedido
+## Cria uma planilha para cada pedido realizando uma consulta no banco de dados de cada mercado
 def create_spreadsheet():
     x = randint(1, 999999)
     vcon = data.ConnectDB()
@@ -106,7 +108,7 @@ def create_spreadsheet():
       
 
 
-## Deleta todos os itens do banco de dados tb_spreadsheet
+## Deleta todos os itens do banco de dados criados dentro da database selecionada
 def clear():
     mercado = cmercados.get()
     if mercado == "Condor":
@@ -127,7 +129,7 @@ def clear():
     data.clean(vcon, query)
     mercado_selected()
 
-## Deleta itens do banco de dados 
+## Deleta item selecionado
 def delete():
     try: 
         mercado = cmercados.get()
@@ -156,7 +158,7 @@ def delete():
 
 
 
-## Seleciona itens requisitados dentro da tabela tb_product do banco de dados e insere essas infomações dentro da tabela create_spreadsheet
+## Seleciona itens produtos cadastrado dentro dos bancos de produtos para adicionar ao banco de dados de planilhas
 def adding():
     mercado = cmercados.get()
     if mercado == "Condor":
@@ -177,14 +179,14 @@ def adding():
         messagebox.showinfo(title="ERRO", message="Preencha todas as informações")
         return
     vcon = data.ConnectDB()
-    query = "SELECT * FROM '"+mercado+"' WHERE CODE="+id
+    query = "SELECT * FROM '"+mercado+"' WHERE CODE="+id   ## Seleciona o nome do mercado dentro da combobox e puxa todos os códigos de produtos do mercado selecionado
     linhas = data.select(vcon, query)
     lista = list(linhas)
     codigo = lista[0]
     produto = lista[1]
     media = lista[2]
     condition = 'A'
-    sql = "INSERT INTO '"+market+"' (CODE, PRODUCT, MEAN, VALUE) VALUES('"+str(codigo)+"','"+produto+"','"+str(media)+"', '"+str(quantidade)+"')"
+    sql = "INSERT INTO '"+market+"' (CODE, PRODUCT, MEAN, VALUE) VALUES('"+str(codigo)+"','"+produto+"','"+str(media)+"', '"+str(quantidade)+"')" ## Insere no banco de dados de planilha de cada mercado as informações do produto
     data.insert(vcon, sql)
     mercado_selected()
     combo.delete(0, END)
@@ -212,13 +214,13 @@ app.heading('qtd', text='qtd')
 app.place(x=100,y=70)
 
 
-
+## Combobox dos mercados disponíveis 
 cmercados = ttk.Combobox(window, values=mercados, width=15, justify='center')
-cmercados.set("Condor")
+cmercados.set("Condor") ## Seta um mercado como a primeira escolha da combobox
 cmercados.place(x=100, y = 30)
 mercado = cmercados.get()
 
-
+## Botão de seleção de mercados
 bmercados = Button(window, text='Selecionar', width=10, height=0, bg=selected, fg=color1, border=0, command=mercado_selected)
 bmercados.place(x=260, y= 27)
 
@@ -229,7 +231,7 @@ lbcombo.place(x=100, y=612)
 value = StringVar()
 combo = ttk.Combobox(window, textvariable=value, width=15, justify='center')
 combolist = listing()
-combo['values'] = (combolist)
+combo['values'] = (combolist) ## atualiza a lista de códigos de produtos
 combo.place(x=100, y=632)
 
 
