@@ -19,39 +19,43 @@ window.configure(bg=color2)
 window.geometry("800x700")
 window.resizable(False, False)
 
-
+mercados = ['Condor', 'Bistek', 'Hipermais Joao Costa', 'Hipermais Araquari', 'Fort Atacadista', 'Rodrigues']
 
 ## Atualiza conexão com o banco de dados.(roda basicamente à todo comando, pois é responsável por atualizar os produtos que estão na tabela com os que foram adicionados no banco de dados)
-def banco_fill():
-        app.delete(*app.get_children())
-        vquery="SELECT * FROM tb_products order by CODE"
-        vcon = data.ConnectDB()
-        linhas=data.fill(vcon,vquery)
-        for i in linhas:
-            app.insert("","end",values=i)
+def mercado_selected():
+    app.delete(*app.get_children())
+    mercado = cmercados.get()
+    query = "SELECT CODE, PRODUCT, MEAN, VALUE FROM '"+mercado+"' order by CODE"
+    vcon = data.ConnectDB()
+    linhas = data.fill(vcon,query)
+    for i in linhas:
+        app.insert("","end",values=i)  
+ 
 
 ## Deleta itens da tabela tb_products
 def delete():
     try:
+        mercado = cmercados.get()
         itemSelection = app.selection()[0]
         valores = app.item(itemSelection, "values")
         code = valores[0]
-        query = "DELETE FROM tb_products WHERE CODE="+code
+        query = "DELETE FROM '"+mercado+"' WHERE CODE="+code
         vcon = data.ConnectDB()
         data.delete(vcon, query)
     except:
         messagebox.showinfo(title="ERRO", message="Selecione um serviço")
         return
-    banco_fill()
+    mercado_selected()
 
 ## Adiciona o item ao banco de dados
 def adding():
     def insert_banco():
+        mercado = cmercados.get()
         code = entrada_codigo.get()
         product = entrada_produto.get()
         mean = entrada_media.get()
         vcon = data.ConnectDB()
-        query="INSERT INTO tb_products (CODE, PRODUCT, MEAN) VALUES('"+code+"','"+product+"','"+mean+"')"
+        query="INSERT INTO '"+mercado+"' (CODE, PRODUCT, MEAN) VALUES('"+code+"','"+product+"','"+mean+"')"
         data.insert(vcon,query)
     
     ## Insere os Produtos na tabela da Treeview
@@ -68,7 +72,7 @@ def adding():
         entrada_media.delete(0, END)
         entrada_produto.delete(0, END)
         entrada_codigo.focus()
-        banco_fill()
+        mercado_selected()
    
 
     ## Janela para adição de produtos
@@ -123,6 +127,14 @@ badding.place(x=100,y=600)
 bdelete = Button(window, text='Delete', width=10, height=0,bg=color4,fg=color1,border=0,command=delete)
 bdelete.place(x=596,y=551)
 
-banco_fill() ## Atualiza conexão com o banco de dados
+cmercados = ttk.Combobox(window, values=mercados, width=15, justify='center')
+cmercados.set("Condor")
+cmercados.place(x=100, y = 30)
+
+bmercados = Button(window, text='Selecionar', width=10, height=0, bg=selected, fg=color1, border=0, command=mercado_selected)
+bmercados.place(x=260, y= 27)
+
+
+mercado_selected() ## Atualiza conexão com o banco de dados
 window.mainloop()
 
